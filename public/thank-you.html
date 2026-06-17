@@ -410,9 +410,6 @@
   if (window.META_PIXEL_ID) {
     fbq('init', window.META_PIXEL_ID);
     fbq('track', 'PageView');
-    if (total !== null) {
-      fbq('track', 'Purchase', { value: total, currency: 'UAH', content_type: 'product' });
-    }
   }
 })();
 
