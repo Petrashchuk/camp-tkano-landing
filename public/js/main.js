@@ -1462,11 +1462,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Помилка сервера');
       const cartTotal = getCartTotal();
-      const cartProductName = cart.length === 1 ? cart[0].name : `${cart.length} товари`;
+      const cartSnapshot = cart.map(i => ({ name: i.name, qty: i.qty, price: i.price }));
+      sessionStorage.setItem('cs_order', JSON.stringify({ items: cartSnapshot, total: cartTotal }));
       cart = [];
       cartSave();
       renderCartBadge();
-      window.location.href = '/thank-you.html?product=' + encodeURIComponent(cartProductName) + '&price=' + cartTotal;
+      window.location.href = '/thank-you.html';
     } catch (err) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Замовити зараз';

@@ -352,11 +352,26 @@
 
 <script>
 (function() {
-  const p = new URLSearchParams(window.location.search);
-  const name = p.get('name'), phone = p.get('phone'),
-        product = p.get('product'), price = p.get('price');
+  let orderItems = null, orderTotal = null;
 
-  if (name || phone || product) {
+  const raw = sessionStorage.getItem('cs_order');
+  if (raw) {
+    sessionStorage.removeItem('cs_order');
+    try {
+      const data = JSON.parse(raw);
+      orderItems = data.items;
+      orderTotal = data.total;
+    } catch(e) {}
+  }
+
+  // Fallback: URL params
+  const p = new URLSearchParams(window.location.search);
+  const name = p.get('name'), phone = p.get('phone');
+  const urlPrice = p.get('price');
+
+  const total = orderTotal ?? (urlPrice && !isNaN(parseInt(urlPrice)) ? parseInt(urlPrice) : null);
+
+  if (orderItems || name || phone) {
     if (name) {
       document.getElementById('customerName').textContent = name;
       document.getElementById('rowName').style.display = 'flex';
@@ -365,15 +380,29 @@
       document.getElementById('customerPhone').textContent = phone;
       document.getElementById('rowPhone').style.display = 'flex';
     }
-    if (product) {
-      document.getElementById('customerProduct').textContent = product;
-      document.getElementById('orderProduct').style.display = 'flex';
+
+    if (orderItems && orderItems.length > 0) {
+      const productRow = document.getElementById('orderProduct');
+      const productEl  = document.getElementById('customerProduct');
+      const labelEl    = productRow.querySelector('.ty-info-label');
+      if (orderItems.length === 1) {
+        const item = orderItems[0];
+        labelEl.textContent = 'Товар';
+        productEl.textContent = item.qty > 1 ? `${item.name} ×${item.qty}` : item.name;
+      } else {
+        labelEl.textContent = 'Товари';
+        productEl.innerHTML = orderItems.map(i => `${i.name} ×${i.qty}`).join('<br>');
+        productRow.style.alignItems = 'flex-start';
+        productEl.style.textAlign = 'right';
+      }
+      productRow.style.display = 'flex';
     }
-    if (price && !isNaN(parseInt(price))) {
-      document.getElementById('customerPrice').textContent =
-        parseInt(price).toLocaleString('uk-UA') + ' грн';
+
+    if (total !== null) {
+      document.getElementById('customerPrice').textContent = total.toLocaleString('uk-UA') + ' грн';
       document.getElementById('orderPrice').style.display = 'flex';
     }
+
     document.getElementById('customerInfo').style.display = 'block';
     window.history.replaceState({}, '', '/thank-you.html');
   }
@@ -381,12 +410,8 @@
   if (window.META_PIXEL_ID) {
     fbq('init', window.META_PIXEL_ID);
     fbq('track', 'PageView');
-    if (price && !isNaN(parseInt(price))) {
-      fbq('track', 'Purchase', {
-        value: parseInt(price),
-        currency: 'UAH',
-        content_type: 'product',
-      });
+    if (total !== null) {
+      fbq('track', 'Purchase', { value: total, currency: 'UAH', content_type: 'product' });
     }
   }
 })();
