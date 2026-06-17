@@ -16,10 +16,10 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://connect.facebook.net", "https://fonts.googleapis.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://connect.facebook.net", "https://fonts.googleapis.com", "https://analytics.tiktok.com"],
       scriptSrcAttr: ["'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https://www.facebook.com", "https://www.google-analytics.com", "https://img.youtube.com"],
-      connectSrc: ["'self'", "https://www.facebook.com", "https://connect.facebook.net"],
+      connectSrc: ["'self'", "https://www.facebook.com", "https://connect.facebook.net", "https://analytics.tiktok.com", "https://business-api.tiktok.com"],
       fontSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       frameSrc: ["https://www.youtube.com", "https://www.youtube-nocookie.com"],
@@ -40,7 +40,8 @@ const orderLimiter = rateLimit({
 app.get('/config.js', (req, res) => {
   res.setHeader('Content-Type', 'application/javascript');
   res.setHeader('Cache-Control', 'no-cache');
-  res.send(`window.META_PIXEL_ID = '${process.env.META_PIXEL_ID || ''}';`);
+  res.send(`window.META_PIXEL_ID = '${process.env.META_PIXEL_ID || ''}';
+window.TIKTOK_PIXEL_ID = '${process.env.TIKTOK_PIXEL_ID || ''}';`);
 });
 
 app.use(express.static(path.join(__dirname, '../public'), {

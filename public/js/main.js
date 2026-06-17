@@ -417,6 +417,11 @@ function trackPixelEvent(eventName, params = {}, eventId = null) {
   fbq('track', eventName, params, opts);
 }
 
+function trackTTEvent(eventName, params = {}) {
+  if (typeof ttq === 'undefined') return;
+  ttq.track(eventName, params);
+}
+
 // ===== CARD CAROUSEL =====
 function buildCardCarousel(p) {
   if (!p.images?.length) {
@@ -672,6 +677,7 @@ function openModal(productId) {
     value: selectedProduct.price,
     currency: 'UAH',
   });
+  trackTTEvent('ViewContent', { content_name: selectedProduct.name, value: selectedProduct.price, currency: 'UAH' });
 }
 
 function closeModal() {
@@ -731,6 +737,7 @@ function addToCart(productId) {
     currency: 'UAH',
     num_items: qty,
   });
+  trackTTEvent('AddToCart', { content_name: product.name, value: product.price * qty, currency: 'UAH' });
 }
 
 function removeFromCart(productId) {
@@ -761,6 +768,7 @@ function updateCartQty(productId, delta) {
       currency: 'UAH',
       num_items: 1,
     });
+    trackTTEvent('AddToCart', { content_name: item.name, value: item.price, currency: 'UAH' });
   }
 }
 
@@ -1095,6 +1103,10 @@ document.addEventListener('DOMContentLoaded', () => {
     fbq('init', window.META_PIXEL_ID);
     fbq('track', 'PageView');
   }
+  if (window.TIKTOK_PIXEL_ID) {
+    ttq.load(window.TIKTOK_PIXEL_ID);
+    ttq.page();
+  }
 
   renderProducts(activeCategory);
   initCategoryTabs();
@@ -1193,6 +1205,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currency: 'UAH',
       num_items: modalQty,
     }, eventId);
+    trackTTEvent('SubmitForm', { content_name: selectedProduct.name, value: selectedProduct.price * modalQty, currency: 'UAH' });
 
     try {
       const res = await fetch('/api/order', {
@@ -1452,6 +1465,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currency: 'UAH',
       num_items: getCartCount(),
     }, eventId);
+    trackTTEvent('InitiateCheckout', { value: getCartTotal(), currency: 'UAH' });
 
     try {
       const res = await fetch('/api/order', {
@@ -1504,6 +1518,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currency: 'UAH',
       num_items: modalQty,
     });
+    trackTTEvent('AddToCart', { content_name: selectedProduct.name, value: selectedProduct.price * modalQty, currency: 'UAH' });
     closeModal();
   });
 

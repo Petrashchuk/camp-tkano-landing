@@ -5,6 +5,7 @@ const { validateOrder } = require('../middleware/validate');
 const { sendTelegramNotification } = require('../services/telegram');
 const { sendMetaConversionEvent } = require('../services/meta-capi');
 const { saveOrder } = require('../services/order-store');
+const { sendTikTokEvent } = require('../services/tiktok');
 
 router.post('/', validateOrder, async (req, res) => {
   try {
@@ -42,6 +43,16 @@ router.post('/', validateOrder, async (req, res) => {
     sendTelegramNotification(order, orderId).catch(err =>
       console.error('Telegram error:', err.message)
     );
+
+    sendTikTokEvent({
+      event: hasItems ? 'InitiateCheckout' : 'SubmitForm',
+      event_id: orderId,
+      phone: order.phone,
+      ip: order.ip,
+      userAgent: order.userAgent,
+      content_name: order.product,
+      value: order.price,
+    }).catch(err => console.error('TikTok error:', err.message));
 
     sendMetaConversionEvent({
       event_name: hasItems ? 'InitiateCheckout' : 'Lead',
