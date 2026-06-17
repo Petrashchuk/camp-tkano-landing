@@ -752,6 +752,16 @@ function updateCartQty(productId, delta) {
   renderCartItems();
   renderCheckoutSummary();
   refreshProductCard(productId);
+  if (delta > 0) {
+    trackPixelEvent('AddToCart', {
+      content_name: item.name,
+      content_ids: [item.sku],
+      content_type: 'product',
+      value: item.price,
+      currency: 'UAH',
+      num_items: 1,
+    });
+  }
 }
 
 
@@ -879,7 +889,20 @@ function coQtyChange(productId, delta) {
   if (!item) return;
   item.qty = Math.max(0, item.qty + delta);
   if (item.qty === 0) { removeFromCart(productId); }
-  else { cartSave(); renderCartBadge(); }
+  else {
+    cartSave();
+    renderCartBadge();
+    if (delta > 0) {
+      trackPixelEvent('AddToCart', {
+        content_name: item.name,
+        content_ids: [item.sku],
+        content_type: 'product',
+        value: item.price,
+        currency: 'UAH',
+        num_items: 1,
+      });
+    }
+  }
   renderCheckoutSummary();
 }
 
