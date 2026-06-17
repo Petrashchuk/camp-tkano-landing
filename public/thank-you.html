@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Дякуємо за замовлення — CampStore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:      #52A030;
+      --green-dim:  rgba(82,160,48,0.12);
+      --green-glow: rgba(82,160,48,0.35);
+      --green-dark: #163A0A;
+      --orange:     #F57C00;
+      --bg:         #0D1A0A;
+      --card-bg:    rgba(18,34,12,0.88);
+      --border:     rgba(255,255,255,0.08);
+      --border2:    rgba(82,160,48,0.25);
+      --text:       #F0F5EB;
+      --text2:      #8FA882;
+      --text3:      #5A6652;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Sparks ── */
+    .sparks { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .spark {
+      position: absolute; bottom: -5%;
+      width: 2px; border-radius: 50%;
+      background: var(--green);
+      animation: sparkRise linear infinite;
+      opacity: 0;
+    }
+    @keyframes sparkRise {
+      0%   { bottom: -5%; opacity: 0; }
+      10%  { opacity: 0.5; }
+      90%  { opacity: 0.15; }
+      100% { bottom: 105%; opacity: 0; transform: translateX(15px); }
+    }
+
+    /* ── Header ── */
+    .ty-header {
+      position: relative; z-index: 10;
+      height: 60px;
+      display: flex; align-items: center;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(13,26,10,0.7);
+      backdrop-filter: blur(10px);
+    }
+    .ty-logo { font-size: 20px; font-weight: 800; color: var(--text); text-decoration: none; }
+    .ty-logo span { color: var(--orange); }
+
+    /* ── Main ── */
+    .ty-main {
+      position: relative; z-index: 1;
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      padding: 48px 20px 64px;
+      overflow: hidden;
+    }
+    .ty-main::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 55% at 50% 40%, rgba(82,160,48,0.09) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* ── Card ── */
+    .ty-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      max-width: 540px; width: 100%;
+      text-align: center;
+      position: relative;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+
+    /* corner frame */
+    .ty-frame::before, .ty-frame::after,
+    .ty-frame span::before, .ty-frame span::after {
+      content: ''; position: absolute;
+      width: 32px; height: 32px;
+      border-color: var(--green); border-style: solid; opacity: 0.3;
+    }
+    .ty-frame::before  { top: 14px; left: 14px;  border-width: 2px 0 0 2px; }
+    .ty-frame::after   { top: 14px; right: 14px; border-width: 2px 2px 0 0; }
+    .ty-frame span::before { bottom: 14px; left: 14px;  border-width: 0 0 2px 2px; }
+    .ty-frame span::after  { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
+
+    /* ── Animated check ── */
+    .ty-check { width: 72px; height: 72px; margin: 0 auto 1.5rem; }
+    .ty-check svg { width: 72px; height: 72px; }
+    .ty-check-circle {
+      stroke-dasharray: 224; stroke-dashoffset: 224;
+      animation: drawCircle 0.65s 0.2s ease forwards;
+    }
+    .ty-check-mark {
+      stroke-dasharray: 60; stroke-dashoffset: 60;
+      animation: drawMark 0.4s 0.85s ease forwards;
+    }
+    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+    @keyframes drawMark   { to { stroke-dashoffset: 0; } }
+
+    /* ── Text ── */
+    .ty-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.6rem; letter-spacing: -0.3px; }
+    .ty-sub   { color: var(--text2); font-size: 0.95rem; line-height: 1.65; margin-bottom: 1.4rem; }
+
+    /* ── Call badge ── */
+    .ty-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 20px;
+      background: var(--green-dim);
+      border: 1px solid rgba(82,160,48,0.3);
+      border-radius: 100px;
+      font-size: 0.85rem; font-weight: 600; color: var(--green);
+      margin-bottom: 1.75rem;
+    }
+
+    /* ── Info block ── */
+    .ty-info {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.75rem;
+      display: none; text-align: left;
+    }
+    .ty-info-row {
+      display: flex; justify-content: space-between; gap: 1rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.88rem;
+    }
+    .ty-info-row:last-child { border-bottom: none; }
+    .ty-info-label { color: var(--text2); }
+    .ty-info-value { font-weight: 600; color: var(--text); text-align: right; word-break: break-word; }
+    .ty-price { color: var(--orange); }
+
+    /* ── Steps ── */
+    .ty-steps { display: flex; margin-bottom: 2rem; }
+    .ty-step {
+      flex: 1; text-align: center; position: relative;
+    }
+    .ty-step::after {
+      content: ''; position: absolute;
+      top: 16px; left: 50%; width: 100%; height: 2px;
+      background: var(--border); z-index: 0;
+    }
+    .ty-step:last-child::after { display: none; }
+    .ty-step.done::after { background: var(--green); }
+
+    .ty-step-circle {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 0.5rem; position: relative; z-index: 1;
+      color: var(--text3);
+    }
+    .ty-step.done .ty-step-circle {
+      background: var(--green-dim);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .ty-step.active .ty-step-circle {
+      background: var(--green-dim);
+      border-color: var(--green);
+      color: var(--green);
+      box-shadow: 0 0 12px var(--green-glow);
+    }
+    .ty-step-label { font-size: 0.72rem; color: var(--text3); }
+    .ty-step.done .ty-step-label,
+    .ty-step.active .ty-step-label { color: var(--text2); }
+
+    /* ── Buttons ── */
+    .ty-btns { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .ty-btn-outline {
+      display: block; padding: 13px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border2);
+      background: transparent;
+      color: var(--text); font-size: 14px; font-weight: 600;
+      text-decoration: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .ty-btn-outline:hover { border-color: var(--green); background: var(--green-dim); }
+    .ty-btn-primary {
+      display: block; padding: 14px;
+      border-radius: 10px;
+      background: var(--green);
+      color: white; font-size: 14px; font-weight: 700;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .ty-btn-primary:hover { opacity: 0.88; }
+
+    /* ── Socials ── */
+    .ty-socials { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .ty-social {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 16px; border-radius: 9px;
+      font-size: 13px; font-weight: 600; color: white;
+      text-decoration: none; transition: opacity 0.15s;
+    }
+    .ty-social:hover { opacity: 0.83; }
+    .ty-social--tg { background: #229ED9; }
+    .ty-social--vb { background: #7360F2; }
+    .ty-social--ig { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+
+    /* ── Stagger anim ── */
+    .ty-anim { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .ty-anim.in { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.25s; }
+    .d3 { transition-delay: 0.4s; } .d4 { transition-delay: 0.55s; }
+    .d5 { transition-delay: 0.7s; } .d6 { transition-delay: 0.85s; }
+
+    @media (max-width: 480px) {
+      .ty-card { padding: 2.2rem 1.4rem; }
+      .ty-title { font-size: 1.5rem; }
+    }
+  </style>
+  <script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+  (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  </script>
+  <script src="/config.js"></script>
+</head>
+<body>
+
+<div class="sparks" id="sparks"></div>
+
+<header class="ty-header">
+  <a href="/" class="ty-logo">🏕️ Camp<span>Store</span></a>
+</header>
+
+<main class="ty-main">
+  <div class="ty-card ty-frame">
+    <span></span>
+
+    <div class="ty-check ty-anim d1">
+      <svg viewBox="0 0 72 72" fill="none">
+        <circle class="ty-check-circle" cx="36" cy="36" r="34"
+          stroke="#52A030" stroke-width="2.5" stroke-linecap="round"/>
+        <polyline class="ty-check-mark" points="22,37 31,46 50,26"
+          stroke="#52A030" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <h1 class="ty-title ty-anim d2">Дякуємо за замовлення!</h1>
+    <p class="ty-sub ty-anim d2">Ми отримали ваше замовлення і вже обробляємо його.</p>
+
+    <div class="ty-badge ty-anim d3">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-5.99-5.99 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+      </svg>
+      Зателефонуємо протягом 1–2 годин
+    </div>
+
+    <div class="ty-info ty-anim d3" id="customerInfo">
+      <div class="ty-info-row" id="rowName" style="display:none">
+        <span class="ty-info-label">Ім'я</span>
+        <span class="ty-info-value" id="customerName"></span>
+      </div>
+      <div class="ty-info-row" id="rowPhone" style="display:none">
+        <span class="ty-info-label">Телефон</span>
+        <span class="ty-info-value" id="customerPhone"></span>
+      </div>
+      <div class="ty-info-row" id="orderProduct" style="display:none">
+        <span class="ty-info-label">Товар</span>
+        <span class="ty-info-value" id="customerProduct"></span>
+      </div>
+      <div class="ty-info-row" id="orderPrice" style="display:none">
+        <span class="ty-info-label">Сума</span>
+        <span class="ty-info-value ty-price" id="customerPrice"></span>
+      </div>
+    </div>
+
+    <div class="ty-steps ty-anim d4">
+      <div class="ty-step done">
+        <div class="ty-step-circle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="ty-step-label">Замовлення</div>
+      </div>
+      <div class="ty-step active">
+        <div class="ty-step-circle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.79a16 16 0 0 0 6.29 6.29l1.87-1.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </div>
+        <div class="ty-step-label">Дзвінок</div>
+      </div>
+      <div class="ty-step">
+        <div class="ty-step-circle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <div class="ty-step-label">Доставка</div>
+      </div>
+    </div>
+
+    <div class="ty-btns ty-anim d5">
+      <a href="/" class="ty-btn-outline">Замовити ще раз</a>
+      <a href="/" class="ty-btn-primary">Повернутись на головну</a>
+    </div>
+
+    <div class="ty-socials ty-anim d6">
+      <a href="https://t.me/nazar_0303" target="_blank" rel="noopener" class="ty-social ty-social--tg">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+        Telegram
+      </a>
+      <a href="viber://chat?number=%2B380680507473" class="ty-social ty-social--vb">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11.4 0C5.5.2.5 5.4.5 11.3c0 2.4.8 4.7 2.1 6.6L1 23l5.3-1.5c1.8 1.1 3.9 1.7 6.1 1.7 6 0 10.9-4.9 11-10.9C23.5 6 18 .1 11.4 0zm5.9 16.4c-.3.8-1.4 1.5-2.3 1.7-.6.1-1.4.2-4.1-.9-3.4-1.4-5.6-4.9-5.8-5.1-.2-.2-1.4-1.9-1.4-3.6 0-1.7.9-2.6 1.2-2.9.3-.4.7-.5.9-.5h.6c.2 0 .5 0 .7.5.3.6 1 2.4 1.1 2.6.1.2.1.4 0 .6-.1.2-.2.3-.3.5-.2.2-.3.3-.5.5-.2.2-.3.4-.1.7.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.7-.1.2-.2.8-.9 1-1.2.2-.3.4-.2.7-.1l2.2 1c.3.1.5.2.5.4.1.2 0 1-.3 1.7z"/>
+        </svg>
+        Viber
+      </a>
+      <a href="https://www.instagram.com/in_smart_home" target="_blank" rel="noopener" class="ty-social ty-social--ig">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+        Instagram
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const name = p.get('name'), phone = p.get('phone'),
+        product = p.get('product'), price = p.get('price');
+
+  if (name || phone || product) {
+    if (name) {
+      document.getElementById('customerName').textContent = name;
+      document.getElementById('rowName').style.display = 'flex';
+    }
+    if (phone) {
+      document.getElementById('customerPhone').textContent = phone;
+      document.getElementById('rowPhone').style.display = 'flex';
+    }
+    if (product) {
+      document.getElementById('customerProduct').textContent = product;
+      document.getElementById('orderProduct').style.display = 'flex';
+    }
+    if (price && !isNaN(parseInt(price))) {
+      document.getElementById('customerPrice').textContent =
+        parseInt(price).toLocaleString('uk-UA') + ' грн';
+      document.getElementById('orderPrice').style.display = 'flex';
+    }
+    document.getElementById('customerInfo').style.display = 'block';
+    window.history.replaceState({}, '', '/thank-you.html');
+  }
+
+  if (window.META_PIXEL_ID) {
+    fbq('init', window.META_PIXEL_ID);
+    fbq('track', 'PageView');
+    if (price && !isNaN(parseInt(price))) {
+      fbq('track', 'Purchase', {
+        value: parseInt(price),
+        currency: 'UAH',
+        content_type: 'product',
+      });
+    }
+  }
+})();
+
+// Sparks
+const sparksEl = document.getElementById('sparks');
+for (let i = 0; i < 14; i++) {
+  const s = document.createElement('div');
+  s.className = 'spark';
+  s.style.cssText = `left:${4+Math.random()*92}%;width:${1.5+Math.random()*2.5}px;height:${6+Math.random()*14}px;animation-duration:${7+Math.random()*6}s;animation-delay:${Math.random()*5}s;`;
+  sparksEl.appendChild(s);
+}
+
+// Stagger
+document.querySelectorAll('.ty-anim').forEach(el => setTimeout(() => el.classList.add('in'), 80));
+</script>
+</body>
+</html>
