@@ -512,13 +512,6 @@ function renderProducts(category) {
   `).join('');
 
   initCardCarousels();
-
-  trackPixelEvent('ViewContent', {
-    content_type: 'product',
-    content_category: category,
-    content_ids: products.map(p => p.sku),
-    currency: 'UAH',
-  });
 }
 
 // ===== TABS =====
