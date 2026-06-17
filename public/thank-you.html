@@ -363,7 +363,7 @@
 
 <script>
 (function() {
-  let orderItems = null, orderTotal = null;
+  let orderItems = null, orderTotal = null, orderEventId = null;
 
   const raw = sessionStorage.getItem('cs_order');
   if (raw) {
@@ -372,6 +372,7 @@
       const data = JSON.parse(raw);
       orderItems = data.items;
       orderTotal = data.total;
+      orderEventId = data.eventId || null;
     } catch(e) {}
   }
 
@@ -422,7 +423,8 @@
     fbq('init', window.META_PIXEL_ID);
     fbq('track', 'PageView');
     if (total !== null) {
-      fbq('track', 'Lead', { value: total, currency: 'UAH', content_type: 'product' });
+      const leadOpts = orderEventId ? { eventID: orderEventId } : {};
+      fbq('track', 'Lead', { value: total, currency: 'UAH', content_type: 'product' }, leadOpts);
     }
   }
   if (window.TIKTOK_PIXEL_ID) {

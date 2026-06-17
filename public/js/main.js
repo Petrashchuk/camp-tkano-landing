@@ -380,6 +380,8 @@ let npStreetName      = '';
 // Modal-specific state
 let modalQty = 1;
 
+let checkoutInitiated = false;
+
 // ===== UTILS =====
 function generateEventId() {
   return 'cs_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
@@ -1403,6 +1405,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  document.getElementById('checkout-form').addEventListener('focusin', () => {
+    if (checkoutInitiated || cart.length === 0) return;
+    checkoutInitiated = true;
+    trackPixelEvent('InitiateCheckout', {
+      content_ids: cart.map(i => i.sku),
+      content_type: 'product',
+      value: getCartTotal(),
+      currency: 'UAH',
+      num_items: getCartCount(),
+    });
+    trackTTEvent('InitiateCheckout', { value: getCartTotal(), currency: 'UAH' });
+  });
+
   document.getElementById('checkout-form').addEventListener('submit', async e => {
     e.preventDefault();
     if (cart.length === 0) {
@@ -1458,15 +1473,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const utms = getUTMParams();
     const items = cart.map(i => ({ name: i.name, sku: i.sku, qty: i.qty, price: i.price, supplierUrl: i.supplierUrl || null }));
 
-    trackPixelEvent('InitiateCheckout', {
-      content_ids: items.map(i => i.sku),
-      content_type: 'product',
-      value: getCartTotal(),
-      currency: 'UAH',
-      num_items: getCartCount(),
-    }, eventId);
-    trackTTEvent('InitiateCheckout', { value: getCartTotal(), currency: 'UAH' });
-
     try {
       const res = await fetch('/api/order', {
         method: 'POST',
@@ -1477,7 +1483,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error(data.error || 'Помилка сервера');
       const cartTotal = getCartTotal();
       const cartSnapshot = cart.map(i => ({ name: i.name, qty: i.qty, price: i.price }));
-      sessionStorage.setItem('cs_order', JSON.stringify({ items: cartSnapshot, total: cartTotal }));
+      sessionStorage.setItem('cs_order', JSON.stringify({ items: cartSnapshot, total: cartTotal, eventId }));
       cart = [];
       cartSave();
       renderCartBadge();

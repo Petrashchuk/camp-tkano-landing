@@ -45,7 +45,7 @@ router.post('/', validateOrder, async (req, res) => {
     );
 
     sendTikTokEvent({
-      event: hasItems ? 'InitiateCheckout' : 'SubmitForm',
+      event: 'SubmitForm',
       event_id: orderId,
       phone: order.phone,
       ip: order.ip,
@@ -55,7 +55,7 @@ router.post('/', validateOrder, async (req, res) => {
     }).catch(err => console.error('TikTok error:', err.message));
 
     sendMetaConversionEvent({
-      event_name: hasItems ? 'InitiateCheckout' : 'Lead',
+      event_name: 'Lead',
       event_id: order.event_id,
       order_id: orderId,
       phone: order.phone,
